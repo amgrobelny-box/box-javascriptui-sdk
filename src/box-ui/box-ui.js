@@ -1,15 +1,14 @@
 const $ = require('jquery');
-const RootFolder = require('./ui-components/root-folder-view');
+const AllFilesView = require('./ui-components/all-files-view');
 class BoxUI {
   constructor(client) {
     this.client = client;
   }
 
   displayRootFolder(parentElement) {
-    this.client.folders.get('0')
+    this.client.folders.get('0', {fields: 'name,id,item_collection'})
       .then((response) => {
-        let root = new RootFolder(this.client, response.data);
-        console.log(response.data);
+        let root = new AllFilesView(this.client, response.data);
         $(parentElement).append(root.compiled);
       });
   }

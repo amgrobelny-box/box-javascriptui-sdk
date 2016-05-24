@@ -4,9 +4,9 @@ const Folders = require('./managers/folders');
 const HEADER_AUTHORIZATION_PREFIX = 'Bearer ';
 
 class BoxClient {
-  constructor(accessToken, refreshUrl) {
-    this.accessToken = accessToken;
-    this.refreshUrl = refreshUrl || "";
+  constructor(tokenObject) {
+    this.accessToken = tokenObject.access_token;
+    this.expiresAt = tokenObject.expires_at || null;
     this.baseApiUrl = "https://api.box.com/2.0"
     this.folders = new Folders(this);
     this.request = axios.create({
@@ -23,7 +23,14 @@ class BoxClient {
   }
 
   makeRequest(params) {
+    if(this.expiresAt && Date.now() >= this.expiresAt) {
+      refreshToken();
+    }
     return this.request.request(params);
+  }
+  
+  refreshToken() {
+    
   }
   
 }
